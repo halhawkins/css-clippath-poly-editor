@@ -135,7 +135,9 @@ export const clippathSlice = createSlice({
 
         deletePath: (state, action: PayloadAction<number>) => {
             if (state.paths) {
-                state.paths = state.paths.filter((_, index) => index !== action.payload);
+                const paths = state.paths;
+                paths.splice(action.payload, 1); // Remove the path at the specified index
+                state.paths = paths
                 // state.paths = paths;
                 if (state.paths !== null) {
                 state.paths.forEach((path) => {
