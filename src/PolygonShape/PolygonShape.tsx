@@ -1,8 +1,9 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { IPath, setZIndex } from "../Slice/ClipPathSlice";
 import { Line } from "react-konva";
 import { useDispatch, useSelector } from "react-redux";
 import { KonvaEventObject } from "konva/lib/Node";
+import Konva from "konva";
 
 interface IPolygonShapeProps {
     points: IPath;
@@ -15,6 +16,7 @@ interface IPolygonShapeProps {
 
 const PolygonShape: FC<IPolygonShapeProps> = ({ points, fill = "black", stroke = "black", index, zIndex = 0}) => {
     const dispatch = useDispatch()
+    const polyRef = useRef<Konva.Line>(null);
     const opacity = useSelector((state: any) => state.backdropSlice.opacity);
     const [shapeOpacity, setShapeOpacity] = useState(opacity)
 
@@ -38,13 +40,15 @@ const PolygonShape: FC<IPolygonShapeProps> = ({ points, fill = "black", stroke =
 
     useEffect(() => {
         setShapeOpacity(opacity);  // Update the shape opacity when the opacity state changes
-    }, [opacity])
+        polyRef.current?.zIndex(zIndex+1); // Update the zIndex of the polygon shape in the canvas
+    }, [opacity, zIndex])
 
     return (
         <Line
             onClick={handleClick}
             points={translateArray(points)}
             fill={fill}
+            ref={polyRef}
             // stroke={stroke}
             zIndex={zIndex}
             closed={true}
