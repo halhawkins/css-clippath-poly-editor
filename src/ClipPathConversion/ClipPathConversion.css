@@ -1,0 +1,31 @@
+.clip-path-conversion {
+    position: absolute;
+    display:flex;
+    flex-direction: column;
+    overflow: auto;
+    top: 50%;
+    left: 50%;
+    width: 800px;
+    height: 600px;
+    transform: translate(-50%, -50%);
+    background-color: rgb(255, 255, 255);
+    z-index: 1000;
+    -webkit-box-shadow: 10px 10px 15px -7px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 15px -7px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 15px -7px rgba(0,0,0,0.75);
+}
+.conversion-header {
+    background-color: olive;
+    justify-content: space-between;
+    color: white;
+    display: flex;
+    width: 100%;
+}
+.conversion-header div {
+    /* padding: 0 4px; */
+    background-color: lightgray;
+    margin: 2px 4px;
+    padding: 0 4px;
+    color: #000;
+    cursor: pointer;
+}

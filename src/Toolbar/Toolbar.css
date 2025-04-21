@@ -1,0 +1,86 @@
+.tool-img {
+    height: 32px;
+    width: 32px;
+    margin: 0;
+}
+.tool-button {
+    padding: 0;
+    border-radius: 3px;
+    margin: 0 1px;
+    border: 1px solid gray;
+}
+.slider {
+    width: 100%;
+    margin-bottom: 16px;
+}
+.seciont-label {
+    margin-bottom: 0;
+    font-size: 0.75rem;
+}
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.context-menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background-color: #171717;    
+    color: rgb(13, 155, 11);
+    padding: 2px auto 2px 8px;
+    -webkit-box-shadow: 7px 6px 9px 1px rgba(41,41,41,1);
+    -moz-box-shadow: 7px 6px 9px 1px rgba(41,41,41,1);
+    box-shadow: 7px 6px 9px 1px rgba(41,41,41,1);
+}
+.btn-export {
+    display: inline‑flex;
+    align-items: center;
+    gap: 0.5em;
+    font: inherit;
+    /* background: #007acc; */
+    color: black;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .export-icon {
+    position: relative;
+    display: inline‑block;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  
+  /* the arrow */
+  .export-icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background: currentColor;
+    clip-path: polygon(
+      50% 0%,   /* tip of arrow */
+      100% 50%, /* right wing */
+      60% 50%,  /* inner right base */
+      60% 100%, /* bottom right of shaft */
+      40% 100%, /* bottom left of shaft */
+      40% 50%,  /* inner left base */
+      0% 50%    /* left wing */
+    );
+  }
+  
+  /* the tray at the bottom */
+  .export-icon::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 80%;
+    height: 20%;
+    background: currentColor;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }

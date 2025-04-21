@@ -1,0 +1,51 @@
+.info-panel {
+    background-color: rgb(244, 244, 244);
+}
+.horizontal, .vertical {
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: row;
+}
+.info-label-1 {
+    font-size: 0.75rem;
+    width: 32px;
+}
+.info-label-2 {
+    font-size: 0.75rem;
+    width: 56px;
+}
+.info-data {
+    width: 48px;
+    border-style: inset;
+    border-width: 1px;
+    border-color: lightgray;
+    padding-left: 0.15rem;
+    margin: 2px 4px 2px 0;
+}
+.color-swatch {
+    width: 100%;
+    height: 32px;
+    border: 1px solid darkgray;
+}
+.clippath-list {
+    background-color: black;
+    color: greenyellow;
+    height: 400px;
+    overflow-y: auto;
+}
+.path-list-entry {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: green;
+    padding: 4px;
+    cursor: pointer;
+}
+.path-list-entry:hover {
+    background-color: darkgreen;
+    color: black;
+}
+.editing {
+    background-color: rgb(23, 23, 23);
+    color: green;
+}

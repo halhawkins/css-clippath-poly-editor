@@ -1,0 +1,135 @@
+.sizing-frame {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 1px solid red;
+    top: 32px;
+    left: 32px;
+    cursor: move;
+    z-index: 50;
+}
+.nw-sizing {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px solid red;
+    top: -8px;
+    left: -8px;
+    cursor: nw-resize;
+    z-index: 10;
+}
+.sw-sizing {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px solid red;
+    bottom: -8px;
+    left: -8px;
+    cursor: sw-resize;
+}
+.se-sizing {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px solid red;
+    bottom: -8px;
+    right: -8px;
+    cursor: se-resize;
+}
+.ne-sizing {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px solid red;
+    top: -8px;
+    right: -8px;
+    cursor: ne-resize;
+}
+.left-size {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px solid red;
+    top: 50%;
+    transform: translateY(-8px);
+    left: -8px;
+    cursor: w-resize;
+}
+.right-size {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px solid red;
+    top: 50%;
+    transform: translateY(-8px);
+    right: -8px;
+    cursor: w-resize;
+}
+.top-size {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px solid red;
+    left: 50%;
+    transform: translateX(-8px);
+    top: -8px;
+    cursor: n-resize;
+}
+.bottom-size {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px solid red;
+    left: 50%;
+    transform: translateX(-8px);
+    bottom: -8px;
+    cursor: s-resize;
+}
+.nw-rotate {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1px solid blue;
+    top: -16px;
+    left: -16px;
+    /* cursor: nw-resize; */
+    z-index: -1;
+    /* background-image: url('../assets/cw-rotate.png'); */
+    cursor: url('../assets/cwrotate.png') 16 16, auto;
+}
+.sw-rotate {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1px solid blue;
+    bottom: -16px;
+    left: -16px;
+    /* cursor: nw-resize; */
+    z-index: -1;
+    /* background-image: url('../assets/cw-rotate.png'); */
+    cursor: url('../assets/cwrotate.png') 16 16, auto;
+}
+.ne-rotate {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1px solid blue;
+    top: -16px;
+    right: -16px;
+    /* cursor: nw-resize; */
+    z-index: -1;
+    /* background-image: url('../assets/cw-rotate.png'); */
+    cursor: url('../assets/ccw-rotate.png') 16 16, auto; 
+}
+.se-rotate {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1px solid blue;
+    bottom: -16px;
+    right: -16px;
+    /* cursor: nw-resize; */
+    z-index: -1;
+    /* background-image: url('../assets/cw-rotate.png'); */
+    cursor: url('../assets/ccw-rotate.png') 16 16, auto; 
+}
