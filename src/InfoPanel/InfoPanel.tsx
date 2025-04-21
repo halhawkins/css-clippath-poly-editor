@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import "./InfoPanel.css"
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { addPath, createNewPath, decrementPath,deletePath, editPath, incrementPath, setColor, setCurrentPathName, setEditing, setPathOpacity } from "../Slice/ClipPathSlice";
+import { addPath, createNewPath, decrementPath,deletePath, editPath, incrementPath, setColor, setCurrentPathName, setEditing, setPathOpacity, setZIndex } from "../Slice/ClipPathSlice";
 import { setOpacity } from "../Slice/BackdropSlice";
 
 interface PathListEntryProps {
@@ -21,7 +21,7 @@ const PathListEntry: FC<PathListEntryProps> = ({ pathName, color, index, setCurr
     const [pathNameState, setPathNameState] = useState(pathName);
     const [showContextMenu, setShowContextMenu] = useState(false);
     // const [editingIndex, setEditingIndex] = useState<number | null>(null);
-
+    const zIndex = useSelector((state: RootState) => state.clippathSlice.paths && state.clippathSlice.paths[index].zIndex)
     const hideMenu = () => {setMenuPos(null)};
 
     useEffect(() => {
@@ -67,33 +67,44 @@ const PathListEntry: FC<PathListEntryProps> = ({ pathName, color, index, setCurr
     }, [currentPathName])
 
     const handleContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
-        const handler = () => {
-            window.removeEventListener("mousedown", handler);
-            hideMenu();
-        };
-        window.addEventListener("mousedown", handler);
+        // const handler = () => {
+        //     window.removeEventListener("mousedown", handler);
+        //     hideMenu();
+        // };
+        // window.addEventListener("mousedown", handler);
         e.preventDefault();
         setMenuPos({ x: e.clientX, y: e.clientY });
     }
 
+    const handleZIndexInc = (e: React.MouseEvent<HTMLDivElement>) => {
+        console.log("🥹zIndex updated:", zIndex);
+        e.preventDefault();
+        dispatch(setZIndex({index, zIndex: zIndex!==null?zIndex+1:1}))
+        hideMenu();
+    }
+
+    const handleZIndexDec = (e: React.MouseEvent<HTMLDivElement>) => {
+        console.log("🥹zIndex updated:", zIndex);
+        e.preventDefault();
+        dispatch(setZIndex({index, zIndex: zIndex!==null?zIndex-1:1}))
+        hideMenu();
+    }
+
     const handleDelete = () => {
-        dispatch(editPath(null))
-        // dispatch(setCurrentPathName(""))
         dispatch(setEditing(null))
         dispatch(createNewPath(false))
         dispatch(deletePath(index))
-        // setEditingIndex(null);
     }
 
     return (
         <>
-            <div onContextMenu={handleContextMenu} className={editing === index ? "path-list-entry editing" : "path-list-entry"} onClick={handleClick}>
-                <div className="path-name">{index === editing ? pathName : pathName}</div>
+            <div onContextMenu={handleContextMenu} className={editing === index ? "path-list-entry editing" : "path-list-entry"}>
+                <div className="path-name" onClick={handleClick}>{index === editing ? pathName : pathName}</div>
                 <div className="path-delete-btn" onClick={handleDelete}>⊗</div>
                 {menuPos && 
                 <div className="context-menu">
-                    <div className="context-menu-item" onClick={() => {dispatch(incrementPath(index))}}>zIndex +</div>
-                    <div className="context-menu-item" onClick={() => {dispatch(decrementPath(index))}}>zIndex -</div>
+                    <div className="context-menu-item" onClick={handleZIndexInc}>zIndex +</div>
+                    <div className="context-menu-item" onClick={handleZIndexDec}>zIndex -</div>
                 </div>
                 }
             </div>
