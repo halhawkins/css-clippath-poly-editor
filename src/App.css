@@ -12,12 +12,12 @@
   background-color: aquamarine;
 }
 .left-sidebar {
-  flex: 0 0 200px;
+  flex: 0 0 80px;
   background-color: #ebffa4;
   padding: 1rem;
 }
 .right-sidebar {
-  flex: 0 0 200px;
+  flex: 0 0 80px;
   background-color: #ebffa4;
   padding: 1rem;
 }

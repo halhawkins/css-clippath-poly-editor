@@ -48,6 +48,8 @@ const CanvasComponent: FC = () => {
         return pnts.points.flatMap(point => [point.x, point.y]);
     };
 
+    const polygonsJSON = polygons !== null ? JSON.stringify(polygons) : null;
+
     const handleClick = (e: KonvaEventObject<MouseEvent>) => {
         const stage = e.target.getStage();
         if (!stage) return;
