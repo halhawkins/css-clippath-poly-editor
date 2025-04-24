@@ -2,5 +2,9 @@
     /* background-color: rgb(255, 255, 255); */
     /* position: relative; */
     height: 100%;
-    background-color: lightcyan;
+    background-color: #e5e5f7;
+    opacity: 1;
+    background-image:  linear-gradient(30deg, #9b9b9b 12%, transparent 12.5%, transparent 87%, #9b9b9b 87.5%, #9b9b9b), linear-gradient(150deg, #9b9b9b 12%, transparent 12.5%, transparent 87%, #9b9b9b 87.5%, #9b9b9b), linear-gradient(30deg, #9b9b9b 12%, transparent 12.5%, transparent 87%, #9b9b9b 87.5%, #9b9b9b), linear-gradient(150deg, #9b9b9b 12%, transparent 12.5%, transparent 87%, #9b9b9b 87.5%, #9b9b9b), linear-gradient(60deg, #9b9b9b77 25%, transparent 25.5%, transparent 75%, #9b9b9b77 75%, #9b9b9b77), linear-gradient(60deg, #9b9b9b77 25%, transparent 25.5%, transparent 75%, #9b9b9b77 75%, #9b9b9b77);
+    background-size: 14px 25px;
+    background-position: 0 0, 0 0, 7px 12px, 7px 12px, 0 0, 7px 12px;
 }
