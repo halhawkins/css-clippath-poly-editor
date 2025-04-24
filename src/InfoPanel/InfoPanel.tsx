@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import "./InfoPanel.css"
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { addPath, createNewPath, decrementPath,deletePath, editPath, incrementPath, setColor, setCurrentPathName, setEditing, setPathOpacity, setZIndex } from "../Slice/ClipPathSlice";
+import { addPath, createNewPath, decrementPath,deletePath, editPath, incrementPath, reorderPaths, setColor, setCurrentPathName, setEditing, setPathOpacity/*, setZIndex */} from "../Slice/ClipPathSlice";
 import { setOpacity } from "../Slice/BackdropSlice";
 
 interface PathListEntryProps {
@@ -21,7 +21,7 @@ const PathListEntry: FC<PathListEntryProps> = ({ pathName, color, index, setCurr
     const [pathNameState, setPathNameState] = useState(pathName);
     const [showContextMenu, setShowContextMenu] = useState(false);
     // const [editingIndex, setEditingIndex] = useState<number | null>(null);
-    const zIndex = useSelector((state: RootState) => state.clippathSlice.paths && state.clippathSlice.paths[index].zIndex)
+    // const zIndex = useSelector((state: RootState) => state.clippathSlice.paths && state.clippathSlice.paths[index].zIndex)
     const hideMenu = () => {setMenuPos(null)};
 
     useEffect(() => {
@@ -72,21 +72,21 @@ const PathListEntry: FC<PathListEntryProps> = ({ pathName, color, index, setCurr
         //     hideMenu();
         // };
         // window.addEventListener("mousedown", handler);
-        e.preventDefault();
-        setMenuPos({ x: e.clientX, y: e.clientY });
+        // e.preventDefault();
+        // setMenuPos({ x: e.clientX, y: e.clientY });
     }
 
     const handleZIndexInc = (e: React.MouseEvent<HTMLDivElement>) => {
-        console.log("🥹zIndex updated:", zIndex);
+        // console.log("🥹zIndex updated:", zIndex);
         e.preventDefault();
-        dispatch(setZIndex({index, zIndex: zIndex!==null?zIndex+1:1}))
+        // dispatch(setZIndex({index, zIndex: zIndex!==null?zIndex+1:1}))
         hideMenu();
     }
 
     const handleZIndexDec = (e: React.MouseEvent<HTMLDivElement>) => {
-        console.log("🥹zIndex updated:", zIndex);
+        // console.log("🥹zIndex updated:", zIndex);
         e.preventDefault();
-        dispatch(setZIndex({index, zIndex: zIndex!==null?zIndex-1:1}))
+        // dispatch(setZIndex({index, zIndex: zIndex!==null?zIndex-1:1}))
         hideMenu();
     }
 
@@ -131,6 +131,12 @@ const InfoPanel:FC = () => {
     const currentPath = useSelector((state: RootState) => state.clippathSlice.editing)
     const editPolys = useSelector((state: RootState) => state.clippathSlice.addNewPath)
     const opacityInputRef = useRef<HTMLInputElement>(null);
+    const [draggedElement, setDraggedElement] = useState<HTMLDivElement | null>(null);
+    const dragStartHandlerRef = useRef(null);
+    const dragEndHandlerRef = useRef(null);
+    const [draggedOverElement, setDraggedOverElement] = useState<number | null>(null);
+    const [dropAbove, setDropAbove] = useState(false);
+
 
     const handleOpacityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newOpacity = parseFloat(e.target.value);
@@ -185,9 +191,55 @@ const InfoPanel:FC = () => {
         setPathNameState(name);
     }
 
-    const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
-        console.log("Dragging:", e.currentTarget);
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+        const target = e.target as HTMLDivElement;
+        setDraggedElement(target); // Store the dragged element
+        console.log("Dragging started",e);
+        target.style.opacity = "0.5"; // Set opacity to 0.5 when dragging
+        target.style.zIndex = "1000"; // Bring the dragged item to the front
+        e.dataTransfer.effectAllowed = "move"; // Set the drag effect to move
     }
+
+    const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+        const target = e.target as HTMLDivElement;
+      
+        if (draggedElement !== null) {
+            dispatch(reorderPaths({source: parseInt(draggedElement.dataset.index!, 10), target: draggedOverElement!, position: dropAbove ? 'before' : 'after'}))
+        }
+        setDraggedElement(null);
+        setDraggedOverElement(null);  
+        setDropAbove(false); 
+      
+        target.style.opacity = "1";
+        target.style.zIndex = "0";
+      };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const entry = (e.target as HTMLElement)
+                        .closest('.path-list-entry-div') as HTMLDivElement | null;
+        if (!entry || entry === draggedElement) return;
+      
+        const { top, height } = entry.getBoundingClientRect();
+        const halfway = top + height / 2;
+        const isAbove = e.clientY < halfway;
+      
+        setDropAbove(isAbove);                                    // <- fixed
+        setDraggedOverElement(parseInt(entry.dataset.index!, 10));
+      };
+      
+    useEffect(() => {
+        console.log("Dragged over element:", draggedOverElement);
+    }, [draggedOverElement])
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        const target = e.target as HTMLDivElement;
+        const closestPathListEntry = target.closest(".path-list-entry-div") as HTMLDivElement;
+        if (!closestPathListEntry) return; // Ignore if the target is not a path list entry
+        setDropAbove(false); // Reset drop position
+        setDraggedOverElement(null); // Clear the dragged over element
+    }
+
 
     return (
         <div className="info-panel">
@@ -219,9 +271,22 @@ const InfoPanel:FC = () => {
             <input ref={colorInputRef} type="color" value={currentColor} onChange={(e) => dispatch(setColor(e.target.value))} hidden style={{zIndex:"200"}}/>
             <div ref={colorSwatchRef} className="color-swatch" style={{backgroundColor: currentColor}} onClick={handleColorSelect}></div>
             {}
-            <div className="clippath-list">
+            <div className="clippath-list"
+            >
                 {paths !== null ? paths.map((path, index) => (
-                    <div key={index} onDrag={handleDrag} draggable={true}>
+                    <div 
+                        className={
+                            draggedOverElement === index
+                              ? `path-list-entry-div ${dropAbove ? 'drop-top' : 'drop-bottom'}`
+                              : 'path-list-entry-div'
+                          }
+                        key={index} 
+                        data-index={index} 
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd} 
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        draggable={true}>
                         <PathListEntry
                             pathName={path.name}
                             color={path.fill}

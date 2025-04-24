@@ -49,3 +49,9 @@
     background-color: rgb(23, 23, 23);
     color: green;
 }
+.dragging {
+    background-color: rgb(23, 23, 23);
+    color: green;
+}
+.drop-top       { border-top: 2px solid #fff81e; }
+.drop-bottom    { border-bottom: 2px solid #fff81e; }
