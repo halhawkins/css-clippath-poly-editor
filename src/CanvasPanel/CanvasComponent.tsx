@@ -17,7 +17,6 @@ const CanvasComponent: FC = () => {
     const canvasPanelRef = useRef<HTMLDivElement>(null);
     const stageRef = useRef<Konva.Stage | null>(null);
     const bgLayerRef = useRef<Konva.Layer>(null);
-    // const [backdropImgState, setBackdropImgState] = useState<Konva.Image | null>(null);
     const dispatch = useDispatch();
     const currentPathName = useSelector((state: RootState) => state.clippathSlice.currentPathName)
     const newImage = useRef<Konva.Image>(null);
@@ -81,7 +80,6 @@ const CanvasComponent: FC = () => {
                         fill: "green",
                         name: currentPathName,
                         opacity: pathOpacity,
-                        zIndex: currentPolyIndex,
                         points: editedPolygon
                     }
                 }));
@@ -92,7 +90,6 @@ const CanvasComponent: FC = () => {
                 stroke: "black",
                 opacity: pathOpacity,
                 fill: "green",
-                zIndex: 0,
                 points: [{ x, y }]
             }));
         }
@@ -144,10 +141,6 @@ const CanvasComponent: FC = () => {
                 newImage.current = image;
                 if (bgLayerRef.current) {
                     bgLayerRef.current.add(newImage.current);
-                    bgLayerRef.current.zIndex(0)
-                    if (layerRef.current !== null) {
-                        layerRef.current.zIndex(1)
-                    }
                 }
             })
         }
@@ -185,7 +178,6 @@ const CanvasComponent: FC = () => {
             name: 'path', 
             fill: 'green', 
             stroke: 'black', 
-            zIndex: 0,
             opacity: pathOpacity,
             points: []
         };
@@ -199,7 +191,6 @@ const CanvasComponent: FC = () => {
             currentPoly.name = currentPathName;
             currentPoly.stroke = "black";
             currentPoly.fill = "green";
-            currentPoly.zIndex = currentPolyIndex;
         }
       
         // If enough points exist, insert the new point into the polygon.
@@ -211,8 +202,7 @@ const CanvasComponent: FC = () => {
             if (currentPolyIndex !== null) {
                 dispatch(editPath({
                     index: currentPolyIndex,
-                    // opacity: pathOpacity,
-                    path: { ...updatedPoly, opacity: pathOpacity, stroke: "black", fill: "green", name: currentPathName, zIndex: currentPolyIndex }
+                    path: { ...updatedPoly, opacity: pathOpacity, stroke: "black", fill: "green", name: currentPathName/*, zIndex: currentPolyIndex*/ }
                 }));
             }
         } else {
@@ -228,7 +218,7 @@ const CanvasComponent: FC = () => {
                 if (polygons !== null && currentPolyIndex !== null) {
                     const editedPolygon = [...polygons[currentPolyIndex].points || []];
                     editedPolygon.splice(index, 1); // Remove the point at the index
-                    dispatch(editPath({index: currentPolyIndex, path: {stroke: "black", opacity: pathOpacity, fill: "green", name: currentPathName, zIndex: currentPolyIndex, points:editedPolygon}}))
+                    dispatch(editPath({index: currentPolyIndex, path: {stroke: "black", opacity: pathOpacity, fill: "green", name: currentPathName/*, zIndex: currentPolyIndex*/, points:editedPolygon}}))
                 }
             }
       }
@@ -279,7 +269,6 @@ const CanvasComponent: FC = () => {
                                     points={{ points: polygon.points || [] }}
                                     fill={polygon.fill}
                                     opacity={layerOpacity}
-                                    zIndex={polygon.zIndex}
                                 />)
                             } else {
                                 return null;
@@ -291,8 +280,7 @@ const CanvasComponent: FC = () => {
                                 strokeWidth={1/actualZoom} 
                                 fill={edittingColor}
                                 opacity={layerOpacity}
-                                zIndex={999} 
-                                points={polygons[currentPolyIndex]?.points ? translateArray({ points: polygons[currentPolyIndex].points }) : []}
+                                 points={polygons[currentPolyIndex]?.points ? translateArray({ points: polygons[currentPolyIndex].points }) : []}
                                 closed={(polygons[currentPolyIndex]?.points?.length ?? 0) > 2}
                                 />
                            {polygons[currentPolyIndex]?.points?.map((point, index) => {
@@ -303,8 +291,6 @@ const CanvasComponent: FC = () => {
                                         x={point.x} 
                                         y={point.y} 
                                         radius={5/actualZoom}  
-                                        // scale={ {x: (1 / zoom), y: (1 / zoom)  }}
-                                        zIndex={999} 
                                         fill={'transparent'}
                                         stroke={"black"}
                                         draggable={true}
@@ -318,7 +304,6 @@ const CanvasComponent: FC = () => {
                                                     fill: "green", 
                                                     name: currentPathName, 
                                                     points:editedPolygon, 
-                                                    zIndex: currentPolyIndex, 
                                                     opacity: pathOpacity
                                                 }
                                             }))
