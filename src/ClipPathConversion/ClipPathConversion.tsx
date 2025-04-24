@@ -3,7 +3,7 @@ import "./ClipPathConversion.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { setShowConversion } from "../Slice/appSlice";
-import { addPath, deletePath, IPathInfo } from "../Slice/ClipPathSlice";
+import { addPath, deletePath, IPathInfo, setEditing } from "../Slice/ClipPathSlice";
 
 
 const DownloadPolygons: FC = () => {
@@ -70,10 +70,7 @@ const UploadPolygons: FC<{onLoad:(polygons: IPathInfo[] | null) => void}> = ({on
         // console.log("🐰🐰🐰Polygon:", p);
         if (
           typeof p.name !== "string" ||
-          // typeof p.fill !== "string" ||
-          // typeof p.opacity !== "number" ||
-          typeof p.points !== "object" ||
-          typeof p.zIndex !== "number"
+          typeof p.points !== "object"
         ) {
           throw new Error(`Object at index ${i} is missing required fields`);
         }
@@ -139,7 +136,7 @@ const ClipPathConversion: FC = () => {
         let output = ``;
         if (paths) {
             paths.forEach((path) => {
-              output += `.${path.name} {\n\tbackground-color: ${path.fill};\n\tclip-path: `;
+              output += `.${path.name.replaceAll(" ","-")} {\n\tbackground-color: ${path.fill};\n\tclip-path: `;
             if (path.points !== undefined) {
               const clipPath = pointsToClipPathPercent(path.points, width, height);
               console.log("Clip Path:", clipPath);
@@ -165,6 +162,7 @@ const ClipPathConversion: FC = () => {
         loadedPolygons.forEach((path) => {
           dispatch(addPath(path))
         })
+        dispatch(setEditing(null))
       }
 
     }, [loadedPolygons]);
