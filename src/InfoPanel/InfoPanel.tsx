@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { addPath, createNewPath, decrementPath,deletePath, editPath, incrementPath, reorderPaths, setColor, setCurrentPathName, setEditing, setPathOpacity/*, setZIndex */} from "../Slice/ClipPathSlice";
 import { setOpacity } from "../Slice/BackdropSlice";
+import { setShowStage, setShowStageOptions, setStageHeight, setStageWidth } from "../Slice/appSlice";
 
 interface PathListEntryProps {
     pathName: string;
@@ -130,6 +131,10 @@ const InfoPanel:FC = () => {
     // const editPoly = useSelector((state: RootState) => state.clippathSlice.addNewPath)
     const currentPath = useSelector((state: RootState) => state.clippathSlice.editing)
     const editPolys = useSelector((state: RootState) => state.clippathSlice.addNewPath)
+    const stageOptions = useSelector((state: RootState) => state.appSlice.showStageoptions)
+    const stageWidth = useSelector((state: RootState) => state.appSlice.stageWidth)
+    const stageHeight = useSelector((state: RootState) => state.appSlice.stageHeight)
+    const stageVisible = useSelector((state: RootState) => state.appSlice.showStage)
     const opacityInputRef = useRef<HTMLInputElement>(null);
     const [draggedElement, setDraggedElement] = useState<HTMLDivElement | null>(null);
     const dragStartHandlerRef = useRef(null);
@@ -266,11 +271,19 @@ const InfoPanel:FC = () => {
                     <input onChange={handlePathNameChange} type="text" className="polygon-name" value={pathNameState} placeholder="Polygon Name" />
                     <button onClick={handleSavePoly}>Save Polygon</button>
                 </>}
+                {stageOptions &&
+                <>
+                    <div className="seciont-label">Stage Options</div>
+                    <input value={stageWidth} type="number" className="stage-width" placeholder="Width" onChange={(e) => dispatch(setStageWidth(Number(e.target.value)))} />
+                    <input value={stageHeight} type="number" className="stage-height" placeholder="Height" onChange={(e) => dispatch(setStageHeight(Number(e.target.value)))} />
+                    <br/><label htmlFor="show-stage">Show Stage</label>
+                    <input name="show-stage" type="checkbox" className="stage-options" onChange={(e) => dispatch(setShowStage(e.target.checked))} checked={stageVisible} />
+                    <button onClick={() => dispatch(setShowStageOptions(false))}>Set Stage</button>
+                </>}
             </div>
             <div className="seciont-label">Color</div>
             <input ref={colorInputRef} type="color" value={currentColor} onChange={(e) => dispatch(setColor(e.target.value))} hidden style={{zIndex:"200"}}/>
             <div ref={colorSwatchRef} className="color-swatch" style={{backgroundColor: currentColor}} onClick={handleColorSelect}></div>
-            {}
             <div className="clippath-list"
             >
                 {paths !== null ? paths.map((path, index) => (

@@ -29,7 +29,7 @@
 }
 .clippath-list {
     background-color: black;
-    color: greenyellow;
+    color: rgb(153, 255, 0);
     height: 400px;
     overflow-y: auto;
 }
@@ -37,7 +37,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    color: green;
+    color: rgb(0, 255, 0);
     padding: 4px;
     cursor: pointer;
 }
@@ -55,3 +55,4 @@
 }
 .drop-top       { border-top: 2px solid #fff81e; }
 .drop-bottom    { border-bottom: 2px solid #fff81e; }
+
