@@ -8,7 +8,7 @@ export interface IPathInfo {
         stroke?: string,
         fill?: string,
         opacity: number,
-        zIndex: number,
+        // zIndex: number,
         
         points?: Array<{x:number, y:number}>
     }
@@ -32,6 +32,12 @@ export interface IClipPathState {
     needsUpdate: boolean,
 }
 
+export type ReorderPayload = {
+    source: number;
+    target: number;
+    position: 'before' | 'after';   // you could call this insertBefore: boolean if you prefer
+  };
+  
 const initialState: IClipPathState = {
     mouseLocation: { x: 0, y: 0 },
     color: '#00007e',
@@ -64,6 +70,36 @@ export const clippathSlice = createSlice({
     name: 'clippath',
     initialState,
     reducers: {
+        reorderPaths: (state, {payload} : PayloadAction<ReorderPayload>) => {
+            if (!state.paths) return;
+
+            const { source, target, position } = payload;
+
+            if (source === target) return;
+            if (
+                source < 0 || source >= state.paths.length ||
+                target < 0 || target >= state.paths.length
+            ) {
+                return;
+            }
+            
+            const [moved] = state.paths.splice(source, 1); // Remove the moved path from its original position
+
+            let dest = position === 'before' ? target : target + 1; // Determine the destination index based on the position
+            if (source < dest) dest -= 1;
+            if (dest > state.paths.length) dest = state.paths.length;
+
+            state.paths.splice(dest, 0, moved); 
+
+            const syncArray = <T>(arr: T[]) => {
+                const [v] = arr.splice(source, 1); // Remove the moved path from its original position
+                arr.splice(dest, 0, v); // Insert it at the new position
+            };
+            syncArray(state.pathNames);
+            syncArray(state.pathStrokes);
+            syncArray(state.fills);
+            state.needsUpdate = true;
+        },
         createNewPath: (state, action:PayloadAction<boolean>) => {
             state.addNewPath = action.payload;
             if (!action.payload) {
@@ -123,14 +159,14 @@ export const clippathSlice = createSlice({
               }
             }
         },
-        setZIndex: (state, action: PayloadAction<{index: number, zIndex: number}>) => {
-            state.paths?.forEach((path, index) => {
-                if (index === action.payload.index) {
-                    path.zIndex = action.payload.zIndex;
-                }
-            });
-            state.paths = state.paths ? [...state.paths] : null; // Trigger re-render with new paths array
-        },
+        // setZIndex: (state, action: PayloadAction<{index: number, zIndex: number}>) => {
+        //     state.paths?.forEach((path, index) => {
+        //         if (index === action.payload.index) {
+        //             path.zIndex = action.payload.zIndex;
+        //         }
+        //     });
+        //     state.paths = state.paths ? [...state.paths] : null; // Trigger re-render with new paths array
+        // },
       
 
         deletePath: (state, action: PayloadAction<number>) => {
@@ -204,14 +240,11 @@ export const clippathSlice = createSlice({
         needsUpdate: (state, action: PayloadAction<boolean>) => {
             state.needsUpdate = action.payload;
         },
-        // reorderPaths: (state, action: PayloadAction<IPathInfo[]>) => {
-        // reorderPaths: (state, action: PayloadAction<IPathInfo[]>) => {
-        //     // state.paths = action.payload;
-        // }
     }
 })
 
 export const { 
+    reorderPaths,
     createNewPath, 
     addPath, 
     incrementPath,
@@ -228,7 +261,7 @@ export const {
     setColor, 
     setPathOpacity,
     needsUpdate,
-    setZIndex,
+    // setZIndex,
     // reorderPaths,
     setEditingFrameColor} = clippathSlice.actions;
 
