@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from "react";
 import "./CanvasPanel.css";
-import { Circle, Layer, Line, Stage } from "react-konva";
+import { Circle, Layer, Line, Rect, Stage } from "react-konva";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import PolygonShape from "../PolygonShape/PolygonShape";
@@ -23,6 +23,9 @@ const CanvasComponent: FC = () => {
     const layerRef = useRef<Konva.Layer>(null);
 
 
+    const stageWidth = useSelector((state: RootState) => state.appSlice.stageWidth)
+    const stageHeight = useSelector((state: RootState) => state.appSlice.stageHeight)
+    const stageVisible = useSelector((state: RootState) => state.appSlice.showStage)
     // when creating a new polygon, creatingPolygon will be true
     const creatingPolygon = useSelector((state: RootState) => state.clippathSlice.addNewPath);
 
@@ -260,6 +263,17 @@ const CanvasComponent: FC = () => {
                     <Layer onClick={(e) => {e.evt.preventDefault()}} ref={bgLayerRef} key="background">
                     </Layer>
                     <Layer ref={layerRef}>
+                    {stageVisible &&
+                            <Rect
+                                width={stageWidth}
+                                height={stageHeight}
+                                fill={"white"}   
+                                draggable={false}
+                                opacity={1}
+                                strokeWidth={1/actualZoom}
+                                stroke={"black"}
+                                />
+                        }
                         {(polygons !== null) && (polygons.length > 0) && polygons.map((polygon, index) => {
                             if (polygon.points && polygon.points.length > 2) {
                                 return(
