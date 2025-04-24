@@ -2,7 +2,7 @@ import { FC, useEffect, useState, useRef } from "react";
 import "./ClipPathConversion.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { setShowConversion } from "../Slice/appSlice";
+import { setShowConversion, setStageHeight, setStageWidth } from "../Slice/appSlice";
 import { addPath, deletePath, IPathInfo, setEditing } from "../Slice/ClipPathSlice";
 
 
@@ -43,6 +43,7 @@ const DownloadPolygons: FC = () => {
 
 const UploadPolygons: FC<{onLoad:(polygons: IPathInfo[] | null) => void}> = ({onLoad}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch();
 
   /** Opens the hidden <input type="file"> */
   const openFilePicker = () => fileInputRef.current?.click();
@@ -62,6 +63,7 @@ const UploadPolygons: FC<{onLoad:(polygons: IPathInfo[] | null) => void}> = ({on
       // Modern: use Blob.text(); File inherits from Blob
       const text = await file.text();
       const raw = JSON.parse(text);
+      console.log("🐰🐰🐰raw:", raw);
 
       // rudimentary validation – replace / expand as needed
       if (!Array.isArray(raw)) throw new Error("File root is not an array");
@@ -76,6 +78,11 @@ const UploadPolygons: FC<{onLoad:(polygons: IPathInfo[] | null) => void}> = ({on
         }
         return p as IPathInfo;
       });
+      const allPoints = polygons.flatMap(p => p.points);
+      const maxX = Math.max(...allPoints.map(p => p.x));
+      const maxY = Math.max(...allPoints.map(p => p.y));
+      dispatch(setStageWidth(maxX));
+      dispatch(setStageHeight(maxY));
 
       onLoad(polygons);   // success
     } catch (err) {
@@ -116,6 +123,8 @@ const ClipPathConversion: FC = () => {
   // const left = useSelector((state: RootState) => state.clippathSlice.left);
   const width = useSelector((state: RootState) => state.appSlice.canvasWidth);
   const height = useSelector((state: RootState) => state.appSlice.canvasHeight);
+  const stageWidth = useSelector((state: RootState) => state.appSlice.stageWidth);
+  const stageHeight = useSelector((state: RootState) => state.appSlice.stageHeight);
   // const []
     // Conversion logic goes here
     const pointsToClipPathPercent = (
@@ -134,16 +143,17 @@ const ClipPathConversion: FC = () => {
     
     useEffect(() => {
         let output = ``;
+        const containerCSS = `.clip-container {\n\twidth: ${Math.round(stageWidth)}px;\n\theight: ${Math.round(stageHeight)}px;\n\tposition: relative;\n}\n`;
         if (paths) {
             paths.forEach((path) => {
-              output += `.${path.name.replaceAll(" ","-")} {\n\tbackground-color: ${path.fill};\n\tclip-path: `;
+              output += `.${path.name.replaceAll(" ","-")} {\n\tposition: absolute;\n\twidth: 100%;\n\twidth: 100%;\n\tbackground-color: ${path.fill};\n\tclip-path: `;
             if (path.points !== undefined) {
-              const clipPath = pointsToClipPathPercent(path.points, width, height);
+              const clipPath = pointsToClipPathPercent(path.points, stageWidth, stageHeight);
               console.log("Clip Path:", clipPath);
               output += clipPath + ";\n}\n";
             }
           })
-          setConversionOutput(output);
+          setConversionOutput(containerCSS+output);
         }
     }, [paths]);
 
