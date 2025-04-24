@@ -9,6 +9,16 @@
     margin: 0 1px;
     border: 1px solid gray;
 }
+.text-button {
+    padding: 3px 6px;
+    border-radius: 3px;
+    margin: 0 1px;
+    font-size: 0.8rem;
+    border: 1px solid gray;
+    justify-self: center;
+    /* background-color: #171717; */
+    /* color: rgb(13, 155, 11); */
+}
 .slider {
     width: 100%;
     margin-bottom: 16px;

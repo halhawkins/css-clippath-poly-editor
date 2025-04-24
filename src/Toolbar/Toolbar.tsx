@@ -6,12 +6,13 @@ import zoomIn from "../assets/zoom-in.svg"
 import zoomOut from "../assets/zoom-out.svg"
 import saveBackdrop from "../assets/saveImage.svg"
 import convert from "../assets/convert.svg"
+import stageIcon from "../assets/stage.svg"
 import "./Toolbar.css"
 import { settingBackdrop, setBackdropImg, formattingBackdrop } from "../Slice/BackdropSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { createNewPath, setEditingFrameColor } from "../Slice/ClipPathSlice";
 import { RootState } from "../../store";
-import { setShowConversion, setZoom } from "../Slice/appSlice";
+import { setShowConversion, setShowStageOptions, setZoom } from "../Slice/appSlice";
 
 const EditintgFrame: FC = () => {
     const dispatch = useDispatch();
@@ -96,6 +97,10 @@ const Toolbar: FC = () => {
         dispatch(setShowConversion(true));
     }
 
+    const handleSetStageClick = () => {
+        dispatch(setShowStageOptions(true))
+    }
+
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files && e.target.files[0];
         if (file) {
@@ -119,25 +124,24 @@ const Toolbar: FC = () => {
         <div className="toolbar">
             <input ref={fileInputRef} onChange={handleFileSelect} type="file" accept="image/*" id="file-input" style={{ display: "none" }} />
             {addBackdropState && 
-                <button onClick={handleAddBackdropClick} className="tool-button" title="Add tracing backdrop"><img src={addBackdrop} className="tool-img"/></button>}
+                <button onClick={handleAddBackdropClick} className="text-button" title="Add tracing backdrop">Load Ref Image{/*<img src={addBackdrop} className="tool-img"/>*/}</button>}
             {deleteBackdropState &&
-                <button onClick={handleDeleteBackdropClick} className="tool-button" title="Delete tracing backdrop"><img src={deleteBackdrop} className="tool-img"/></button>}
+                <button onClick={handleDeleteBackdropClick} className="text-button" title="Delete tracing backdrop">Delete Ref Image{/*<img src={deleteBackdrop} className="tool-img"/>*/}</button>}
             {saveBackdropState &&
-                <button onClick={handleSaveBackdropClick} className="tool-button" title="Save tracing backdrop"><img src={saveBackdrop} className="tool-img"/></button>  }
+                <button onClick={handleSaveBackdropClick} className="text-button" title="Save tracing backdrop">Save Ref Image{/*<img src={saveBackdrop} className="tool-img"/>*/}</button>  }
             {addClipPathState &&
-                <button onClick={handleAddClipPathClick} className="tool-button" title="Add new clippath"><img src={addClipPath} className="tool-img"/></button>}
+                <button onClick={handleAddClipPathClick} className="text-button" title="Add new clippath">Add new polygon{/*<img src={addClipPath} className="tool-img"/>*/}</button>}
             {!addClipPathState &&
-                <button disabled onClick={handleAddClipPathClick} className="tool-button disabled" title="Add new clippath"><img src={addClipPath} className="tool-img"/></button>}
-            <button title="Zoom In" className="tool-button" onClick={handleZoomInClick}><img src={zoomIn} className="tool-img" /></button>
-            <button title="Zoom Out" className="tool-button" onClick={handleZoomOutClick} ><img src={zoomOut} className="tool-img" /></button>
-            <button onClick={handleConvertClick} className="tool-button">
-                <img src={convert} className="tool-img" alt="convert format" />
-            </button>
+                <button disabled onClick={handleAddClipPathClick} className="text-button disabled" title="Add new clippath"><img src={addClipPath} className="tool-img"/></button>}
+            <button title="Zoom In" className="text-button" onClick={handleZoomInClick}>Zoom in{/*<img src={zoomIn} className="tool-img" />*/}</button>
+            <button title="Zoom Out" className="text-button" onClick={handleZoomOutClick} >Zoom out{/*<img src={zoomOut} className="tool-img" />*/}</button>
+            <button onClick={handleConvertClick} className="text-button">Export Polygons{/*<img src={convert} className="tool-img" alt="convert format" />*/}</button>
+            <button className="text-button" title="Stage" onClick={handleSetStageClick}>Stage settings{/*<img src={stageIcon} className="tool-img" />*/}</button>
             {/* {saveClipPathState &&
                 <button onClick={handleSaveClipPathClick} className="tool-button" title="Save current clippath"><img src={saveClipPath} className="tool-img"/></button> }
             {deleteClipPathState &&
                 <button onClick={handleDeleteClipPathClick} className="tool-button" title="Delete selected clippath"><img src={deleteClipPath} className="tool-img"/></button>} */}
-            <EditintgFrame />
+            {/* <EditintgFrame /> */}
             {
                 /**
                  * Lets create a new slice for handling konvajs canvas and its state.
