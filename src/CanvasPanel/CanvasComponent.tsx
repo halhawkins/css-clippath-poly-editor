@@ -336,7 +336,7 @@ const CanvasComponent: FC = () => {
                                             }
                                         }}
                                         onMouseDown={(e) => handleHandleRightClick(e, index) }
-                                        />
+                                    />
                                 )
                             })}
                         </>

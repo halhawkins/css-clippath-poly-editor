@@ -5,6 +5,7 @@ import { RootState } from "../../store";
 import { addPath, createNewPath, decrementPath,deletePath, editPath, incrementPath, reorderPaths, setColor, setCurrentPathName, setEditing, setPathOpacity/*, setZIndex */} from "../Slice/ClipPathSlice";
 import { setOpacity } from "../Slice/BackdropSlice";
 import { setShowStage, setShowStageOptions, setStageHeight, setStageWidth } from "../Slice/appSlice";
+import Palette from "../Palette/Palette";
 
 interface PathListEntryProps {
     pathName: string;
@@ -284,6 +285,7 @@ const InfoPanel:FC = () => {
             <div className="seciont-label">Color</div>
             <input ref={colorInputRef} type="color" value={currentColor} onChange={(e) => dispatch(setColor(e.target.value))} hidden style={{zIndex:"200"}}/>
             <div ref={colorSwatchRef} className="color-swatch" style={{backgroundColor: currentColor}} onClick={handleColorSelect}></div>
+            <Palette />
             <div className="clippath-list"
             >
                 {paths !== null ? paths.map((path, index) => (
